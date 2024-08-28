@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="icon" href="libs/media/icons8-globe-94.png" type="image/png">
+    <link rel="stylesheet" href="libs/libraries/leaflet/css/leaflet.css">
+    <link rel="stylesheet" href="libs/libraries/leaflet-extra-markers/src/assets/css/leaflet.extra-markers.css">
+    <link rel="stylesheet" href="libs/libraries/bootstrap.min.css">
+    <link rel="stylesheet" href="libs/css/style.css">
+    <link rel="stylesheet" href="libs/libraries/toastify.css">
+    <link rel="stylesheet" href="libs/libraries/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="libs/libraries/MarkerCluster.css">
+    <link rel="stylesheet" href="libs/libraries/leaflet-extra-markers/dist/css/leaflet.extra-markers.min.css">
+    <link rel="stylesheet" href="libs/libraries/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="libs/libraries/easy-button.css">
+    <script src="libs/libraries/leaflet/js/leaflet.js"></script>
+    <script src="libs/libraries/leaflet-extra-markers/dist/js/leaflet.extra-markers.js"></script>
+    <script src="libs/libraries/jquery.min.js"></script>
+    <script src="libs/libraries/toastify.js"></script>
+    <script src="libs/libraries/leaflet.markercluster.js"></script>
+    
+    <script src="libs/libraries/easy-button.js"></script>
+    <script src="libs/libraries/bootstrap.bundle.min.js"></script> 
+    <script src="libs/libraries/bootstrap.bundle.js"></script> 
+
+
+
+</head>
+<body>
+    <!-----------------Preloader---------------->
+  <div id="preloader">
+    <div id="preloader-content">
+        <h1>Welcome to Jordan's Gazetteer Project</h1>
+        <div id="globe-container">
+            <img src="libs/media/icons8-globe-94.png" alt="Spinning Globe" id="globe">
+        </div>
+        <p>Let's explore the world together!</p>
+    </div>
+    <div id="airplane">
+        <img src="libs/media/icons8-aeroplane-48.png" alt="Airplane">
+    </div>
+</div>
+    <!--------------------Main Application---------------->
+    <span id="selectContainer">
+        <select id="countrySelect" class="form-select shadow-sm">
+          <!-- populate from an AJAX CALL to a PHP routine that returns a JSON object that is an array of just ISO codes and names from countryBorders.geo.json -->
+         
+        </select>
+      </span>
+      
+      <div id="map"></div>
+<!--------------Modal Buttons---------------------->
+      <div id="infoModal" class="modal" data-bs-backdrop="false" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content shadow">
+                <div class="modal-header bg-success bg-gradient text-white">
+                    <h5 class="modal-title">Overview</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table id="countryInfoTable" class="table table-striped">
+                        <!-- Country info will be appended here -->
+                        <tr>
+      
+                            <td class="text-center">
+                              <i class="fa-solid fa-street-view fa-xl text-success"></i>
+                            </td>
+                
+                            <td>
+                              Continent
+                            </td>
+                
+                            <td class="text-end">
+                              <span id="contRslt"></span>
+                            </td>
+                
+                          </tr>
+
+                          <tr>
+      
+                            <td class="text-center">
+                              <i class="fa-solid fa-street-view fa-xl text-success"></i>
+                            </td>
+                
+                            <td>
+                              Capital
+                            </td>
+                
+                            <td class="text-end">
+                              <span id="capRslt"></span>
+                            </td>
+                
+                          </tr>
+
+                          <tr>
+      
+                            <td class="text-center">
+                              <i class="fa-solid fa-street-view fa-xl text-success"></i>
+                            </td>
+                
+                            <td>
+                              Currency
+                            </td>
+                
+                            <td class="text-end">
+                              <span id="currRslt"></span>
+                            </td>
+                
+                          </tr>
+
+                          <tr>
+      
+                            <td class="text-center">
+                              <i class="fa-solid fa-street-view fa-xl text-success"></i>
+                            </td>
+                
+                            <td>
+                              Population
+                            </td>
+                
+                            <td class="text-end">
+                              <span id="popRslt"></span>
+                            </td>
+                
+                          </tr>
+
+                          <tr>
+      
+                            <td class="text-center">
+                              <i class="fa-solid fa-street-view fa-xl text-success"></i>
+                            </td>
+                
+                            <td>
+                              Languages
+                            </td>
+                
+                            <td class="text-end">
+                              <span id="langRslt"></span>
+                            </td>
+                
+                          </tr>
+
+                          <tr>
+      
+                            <td class="text-center">
+                              <i class="fa-solid fa-street-view fa-xl text-success"></i>
+                            </td>
+                
+                            <td>
+                              Timezones
+                            </td>
+                
+                            <td class="text-end">
+                              <span id="tzRslt"></span>
+                            </td>
+                
+                          </tr>
+
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+      <div id="weatherModal" class="modal" data-bs-backdrop="false" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content shadow">
+            <div class="modal-header bg-success bg-gradient text-white">
+              <h5 class="modal-title">Weather</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table id="weatherInfoTable" class="table table-striped">
+
+               <tr>
+                    <td class="text-center"><i class="fa-solid fa-clock fa-xl text-success"></i></td>
+                    <td>Local Time</td>
+                    <td class="text-end"> <span id="locTime"></span></td>
+                </tr>
+
+                <tr>
+                    <td class="text-center"><i class="fa-solid fa-map-marker-alt fa-xl text-success"></i></td>
+                    <td>Location</td>
+                    <td class="text-end"> <span id="locCity"></span></td>
+                </tr>
+
+                <tr>
+                    <td class="text-center"><i class="fa-solid fa-thermometer-half fa-xl text-success"></i></td>
+                    <td>Temperature</td>
+                    <td class="text-end"> <span id="curTempt"></span></td>
+                </tr>
+
+                <tr>
+                    <td class="text-center"><i class="fa-solid fa-thermometer-three-quarters fa-xl text-success"></i></td>
+                    <td>Feels Like</td>
+                    <td class="text-end"> <span id="feelsLike"></span></td>
+                </tr>
+
+                <tr>
+                    <td class="text-center"><i class="fa-solid fa-cloud-sun fa-xl text-success"></i></td>
+                    <td>Condition</td>
+                    <td class="text-end"> <span id="condTxt"></span></td>
+                </tr> 
+              </table>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="holidaysModal" class="modal" data-bs-backdrop="false" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content shadow">
+            <div class="modal-header bg-success bg-gradient text-white">
+              <h5 class="modal-title">National Holidays</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table id="holidaysInfoTable" class="table table-striped">
+                <!-- Holiday info will be appended here -->
+                       
+              </table>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+      <div id="landmarkModal" class="modal" data-bs-backdrop="false" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content shadow">
+            <div class="modal-header bg-success bg-gradient text-white">
+              <h5 class="modal-title">Capital City Landmarks</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table id="imagesTable" class="table table-striped">
+                
+          
+              </table>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="newsModal" class="modal" data-bs-backdrop="false" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content shadow">
+                <div class="modal-header bg-success bg-gradient text-white">
+                    <h5 class="modal-title">Latest News</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table id="newsTable" class="table table-striped">
+                        <!-- News articles will be appended here -->
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="currencyModal" data-bs-backdrop="false" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content shadow">
+                <div class="modal-header bg-success bg-gradient text-white">
+                    <h5 class="modal-title">Currency Converter</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="converter-container">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <input type="number" class="form-control" id="amount" value="1" placeholder="Enter amount">
+                            </div>
+                            <div class="col">
+                                <span id="baseCurrencyText"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <span id="conversionResult"></span>
+                            </div>
+                            <div class="col">
+                                <span id="targetCurrencyText">British Pound (GBP)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!--<button type="button" class="btn btn-primary" onclick="convertCurrency()">Convert</button>-->
+                    <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+      
+
+      <script src="libs/js/script.js"></script>
+    
+</body>
+</html>
